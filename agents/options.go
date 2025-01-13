@@ -24,6 +24,7 @@ type Options struct {
 	systemMessage string
 	extraMessages []prompts.MessageFormatter
 	toolChoice    any
+	jsonMode      bool
 }
 
 // Option is a function type that can be used to modify the creation of the agents
@@ -183,5 +184,11 @@ func (o OpenAIOption) WithExtraMessages(extraMessages []prompts.MessageFormatter
 func (o OpenAIOption) WithToolChoice(toolChoice any) Option {
 	return func(co *Options) {
 		co.toolChoice = toolChoice
+	}
+}
+
+func (o OpenAIOption) WithJSONMode(jsonMode bool) Option {
+	return func(co *Options) {
+		co.jsonMode = jsonMode
 	}
 }

@@ -30,6 +30,7 @@ type OpenAIFunctionsAgent struct {
 	CallbacksHandler callbacks.Handler
 	// ToolChoice controls which tool the agent can use
 	ToolChoice any
+	JSONMode   bool
 }
 
 var _ Agent = (*OpenAIFunctionsAgent)(nil)
@@ -48,6 +49,7 @@ func NewOpenAIFunctionsAgent(llm llms.Model, tools []tools.Tool, opts ...Option)
 		OutputKey:        options.outputKey,
 		CallbacksHandler: options.callbacksHandler,
 		ToolChoice:       options.toolChoice,
+		JSONMode:         options.jsonMode,
 	}
 }
 
@@ -143,7 +145,7 @@ func (o *OpenAIFunctionsAgent) Plan(
 	}
 
 	result, err := o.LLM.GenerateContent(ctx, mcList,
-		llms.WithTools(o.tools()), llms.WithStreamingFunc(stream), llms.WithToolChoice(o.ToolChoice))
+		llms.WithTools(o.tools()), llms.WithStreamingFunc(stream), llms.WithToolChoice(o.ToolChoice), llms.WithJSONMode(o.JSONMode))
 	if err != nil {
 		return nil, nil, nil, err
 	}

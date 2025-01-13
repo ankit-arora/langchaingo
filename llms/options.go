@@ -252,9 +252,9 @@ func WithTools(tools []Tool) CallOption {
 
 // WithJSONMode will add an option to set the response format to JSON.
 // This is useful for models that return structured data.
-func WithJSONMode() CallOption {
+func WithJSONMode(jsonMode bool) CallOption {
 	return func(o *CallOptions) {
-		o.JSONMode = true
+		o.JSONMode = jsonMode
 	}
 }
 
