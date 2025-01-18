@@ -8,3 +8,8 @@ type Tool interface {
 	Description() string
 	Call(ctx context.Context, input string) (string, error)
 }
+
+type ToolWithParameters interface {
+	Tool
+	Parameters() map[string]any
+}

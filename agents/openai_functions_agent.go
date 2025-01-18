@@ -56,18 +56,24 @@ func NewOpenAIFunctionsAgent(llm llms.Model, tools []tools.Tool, opts ...Option)
 func (o *OpenAIFunctionsAgent) tools() []llms.Tool {
 	res := make([]llms.Tool, 0)
 	for _, tool := range o.Tools {
+		var parameters map[string]any
+		if toolWithParams, ok := tool.(tools.ToolWithParameters); ok {
+			parameters = toolWithParams.Parameters()
+		} else {
+			parameters = map[string]any{
+				"properties": map[string]any{
+					"__arg1": map[string]string{"title": "__arg1", "type": "string"},
+				},
+				"required": []string{"__arg1"},
+				"type":     "object",
+			}
+		}
 		res = append(res, llms.Tool{
 			Type: "function",
 			Function: &llms.FunctionDefinition{
 				Name:        tool.Name(),
 				Description: tool.Description(),
-				Parameters: map[string]any{
-					"properties": map[string]any{
-						"__arg1": map[string]string{"title": "__arg1", "type": "string"},
-					},
-					"required": []string{"__arg1"},
-					"type":     "object",
-				},
+				Parameters:  parameters,
 			},
 		})
 	}
