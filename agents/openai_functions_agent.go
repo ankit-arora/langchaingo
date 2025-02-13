@@ -236,6 +236,16 @@ func (o *OpenAIFunctionsAgent) ParseOutput(contentResp *llms.ContentResponse) (
 	intermediateMessages := make([]llms.ChatMessage, 0)
 	for _, choice := range contentResp.Choices {
 		// finish
+		if choice.StopReason == "length" {
+			return nil, &schema.AgentFinish{
+				ReturnValues: map[string]any{
+					"output": "We have exceeded the maximum number of tokens supported by the LLM. " +
+						"Please try again with a smaller data size.",
+				},
+				Log: "We have exceeded the maximum number of tokens supported by the LLM. " +
+					"Please try again with a smaller data size.",
+			}, nil, nil
+		}
 		if len(choice.ToolCalls) == 0 {
 			return nil, &schema.AgentFinish{
 				ReturnValues: map[string]any{
